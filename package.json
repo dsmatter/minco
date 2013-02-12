@@ -1,0 +1,24 @@
+{
+  "name": "minco",
+  "version": "0.0.1",
+  "description": "Simple deployment for coffeescript. Like mina for ruby",
+  "main": "index.js",
+  "dependencies": {
+    "cli-color": "*"
+  },
+  "devDependencies": {
+    "coffee-script": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "deploy",
+    "deployment",
+    "coffeescript",
+    "mina"
+  ],
+  "author": "Daniel Strittmatter",
+  "license": "MIT"
+}
