@@ -1,13 +1,19 @@
 {
   "name": "minco",
   "version": "0.0.1",
-  "description": "Simple deployment for coffeescript. Like mina for ruby",
+  "description": "Simple deployment helper inspired by mina",
   "main": "index.js",
   "dependencies": {
     "cli-color": "*"
   },
   "devDependencies": {
     "coffee-script": "*"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "bin": {
+    "minco": "./bin/minco"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
