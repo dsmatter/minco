@@ -64,5 +64,5 @@ init_config = ->
 
   # Write config
   f = fs.createWriteStream config_path
-  f.end (JSON.stringify example_conf)
+  f.end (JSON.stringify example_conf, null, 2)
 
