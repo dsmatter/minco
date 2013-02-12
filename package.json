@@ -2,7 +2,6 @@
   "name": "minco",
   "version": "0.0.1",
   "description": "Simple deployment helper inspired by mina",
-  "main": "index.js",
   "dependencies": {
     "cli-color": "*"
   },
