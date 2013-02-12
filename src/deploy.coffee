@@ -36,7 +36,7 @@ bs.queue ->
   ### Write cleanup function ###
   @fun "cleanup", ->
     release_dir = path.join dir, "releases", "$rno"
-    @if "[[ ! -z $rno ]]", ->
+    @if_zero "$rno", ->
       @cmd "rm", "-rf", release_dir
 
   ### Basic setup ###
@@ -44,25 +44,25 @@ bs.queue ->
 
   dir = config["server_dir"]
   for subdir in ["shared", "releases", "tmp"]
-    @cmd "mkdir", "-p", (path.join dir, subdir)
+    @mkdir dir, subdir
 
   # Create shared dirs
   @log "Create shared dirs"
 
   for shared_dir in config["shared_dirs"]
-    @cmd "mkdir", "-p", (path.join dir, "shared", shared_dir)
+    @mkdir dir, "shared", shared_dir
 
   ### Fetch code ###
   @log "Fetch code"
 
   # Checkout repo
-  @if "[[ ! -d scm/.git ]]", ->
-    @cd (path.join dir, "tmp")
+  @if_not_dir_exists "scm/.git", ->
+    @cd dir, "tmp"
     @cmd "rm", "-rf", "scm"
     @cmd "git", "clone", "-b", config["branch"], config["repo"], "scm"
 
   # Update repo
-  @cd (path.join dir, "tmp", "scm")
+  @cd dir, "tmp", "scm"
   @cmd "git", "checkout", config["branch"]
   @cmd "git", "pull"
 
@@ -71,42 +71,49 @@ bs.queue ->
 
   @raw 'rno="$(readlink "' + (path.join dir, "current") + '")"'
   @raw 'rno="$(basename "$rno")"'
-  @raw "(( rno = rno + 1 ))"
+  @math "rno = rno + 1"
   @cmd "cp", "-r", (path.join dir, "tmp", "scm"), (path.join dir, "releases", "$rno")
 
   ### Link shared dirs ###
   @log "Link shared dirs"
 
-  @cd (path.join dir, "releases", "$rno")
+  @cd dir, "releases", "$rno"
   for shared_dir in config["shared_dirs"]
-    @cmd "mkdir", "-p", (path.dirname shared_dir)
+    @mkdir (path.dirname shared_dir)
     @cmd "ln", "-s", (path.join dir, "shared", shared_dir), shared_dir
 
   ### Run pre-start scripts ###
   @log "Run pre-start scripts"
   for cmd in config["prerun"]
-    @raw cmd
+    @raw_cmd cmd
 
   ### Start the service ###
   @log "Start service"
-  @raw config["run_cmd"]
+  @raw_cmd config["run_cmd"]
 
   ### Update current link ###
   @log "Update current link"
 
-  @cd (path.join dir)
-  @if "[[ -h current ]]", ->
+  @cd dir
+  @if_link_exists "current", ->
     @cmd "rm", "current"
   @cmd "ln", "-s", "releases/$rno", "current"
 
   ### Clean the release dir ###
   @log "Cleaning release dir"
 
-  @cd (path.join dir, "releases")
-  @raw 'release_dirs="$(find . -maxdepth 1 -mindepth 1 -type d -printf "%f\\n" | sort -n)"'
-  @raw 'num_dirs="$(echo "$release_dirs" | wc -l)"'
-  @if "(( num_dirs > 10 ))", ->
-    @raw 'echo "$release_dirs" | head -n1 | while read rm_dir; do'
-    @cmd "rm", "-rf", "$rm_dir"
-    @raw "done"
+  @cd dir, "releases"
+  @assign_output "release_dirs",
+    @build_find ".",
+      maxdepth: 1
+      mindepth: 1
+      type: "d"
+      printf: "%f\\n"
 
+  @assign_output "num_dirs", 'echo "$release_dirs" | wc -l'
+  @if_math "num_dirs > 10", ->
+    @pipe (->
+            @raw 'echo "$release_dirs" | sort -n | head -n1'),
+          (->
+            @while "read rm_dir", ->
+              @cmd "rm", "-rf", "$rm_dir")
