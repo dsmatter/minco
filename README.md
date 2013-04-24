@@ -1,5 +1,5 @@
 # Minco
-A simple deploy tool insired by [mina](http://nadarei.co/mina)
+A simple deploy tool inspired by [mina](http://nadarei.co/mina)
 
 ## Installation
 Make sure you have installed node.js including NPM
