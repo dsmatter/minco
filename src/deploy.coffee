@@ -38,7 +38,7 @@ exports.deploy = (config) ->
     @log "Fetch code"
 
     # Checkout repo
-    @if_not_dir_exists "scm/.git", ->
+    @if_not_dir_exists "tmp/scm/.git", ->
       @cd dir, "tmp"
       @cmd "rm", "-rf", "scm"
       @cmd "git", "clone", "-b", config["branch"], config["repo"], "scm"
