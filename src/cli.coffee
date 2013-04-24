@@ -49,7 +49,7 @@ init_config = ->
     server_dir: "/path/to/dir/on/server"
     repo: "git@github.com:user/repo.git"
     branch: "master"
-    shared_paths: ["node_modules", "db"]
+    shared_dirs: ["node_modules", "db"]
     prerun: [
       "npm install",
       "cake build"
