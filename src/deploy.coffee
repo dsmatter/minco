@@ -7,6 +7,8 @@ clc          = require "cli-color"
 ### Send commands to server ###
 ####
 exports.deploy = (config) ->
+  dir = config["server_dir"]
+
   # Open connection to server
   p = spawn "ssh", [config["server"], "bash -s"], stdio: ["pipe", 1, 2]
 
@@ -24,7 +26,6 @@ exports.deploy = (config) ->
     ### Basic setup ###
     @log "Create subdirs"
 
-    dir = config["server_dir"]
     for subdir in ["shared", "releases", "tmp"]
       @mkdir dir, subdir
 
