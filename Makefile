@@ -1,4 +1,4 @@
-COFFEE=node_modules/.bin/coffee
+COFFEE=coffee
 
 build:
 	$(COFFEE) -co lib src

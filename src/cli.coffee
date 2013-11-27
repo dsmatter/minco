@@ -48,13 +48,14 @@ init_config = ->
     server: "user@host"
     server_dir: "/path/to/dir/on/server"
     repo: "git@github.com:user/repo.git"
+    prj_git_relative_dir: ""
     branch: "master"
     shared_dirs: ["node_modules", "db"]
     prerun: [
       "npm install",
-      "cake build"
+      "echo 'prerun'"
     ]
-    run_cmd: "cake start"
+    run_cmd: "echo 'run_cmd'"
 
   # Ensure deploy script doesn't exist
   config_path = "deploy.json"
