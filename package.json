@@ -8,9 +8,7 @@
   "devDependencies": {
     "coffee-script": "*"
   },
-  "directories": {
-    "lib": "./lib"
-  },
+  "files": ["lib", "bin/minco"],
   "bin": {
     "minco": "./bin/minco"
   },
